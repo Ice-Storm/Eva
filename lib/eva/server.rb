@@ -22,11 +22,6 @@ module Eva
       @reactor.run do |reactor|
         tcp = Eva::Client.new(reactor, @state)
         tcp.handle_request(@app)
-#        协程
-#         co(@reactor.work(proc {
-#           tcp = Eva::Client.new(@reactor)
-#           tcp.handle_request(@app)
-#         }))
       end
     end
   end

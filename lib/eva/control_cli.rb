@@ -123,12 +123,8 @@ module Eva
     end
 
     def run
-      #start if @command == "start"
-
       prepare_configuration
-
       send_signal
-
     rescue => e
       message e.message
       message e.backtrace

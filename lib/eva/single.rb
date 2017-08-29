@@ -22,7 +22,8 @@ module Eva
         start_server.run
       rescue => e
         log 'unknown error occurred'
-        log e
+        log e.message
+        log e.trace
       end
     end
 

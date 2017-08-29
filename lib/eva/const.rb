@@ -1,8 +1,7 @@
 #encoding: utf-8
 module Eva
 
-  class UnsupportedOption < RuntimeError
-  end
+  class UnsupportedOption < RuntimeError; end
 
   HTTP_STATUS_CODES = {
       100 => 'Continue',

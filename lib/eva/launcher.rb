@@ -51,10 +51,14 @@ module Eva
       end
     end
 
+    def log(str)
+      @server.log str
+    end
+
     def graceful_stop
       @server.stop
-      p "=== eva shutdown: #{Time.now} ==="
-      p "- Goodbye!"
+      log "=== eva shutdown: #{Time.now} ==="
+      log "- Goodbye!"
     end
 
     def setup_signals

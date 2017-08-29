@@ -135,8 +135,6 @@ module Eva
 
     def eva_default_options
       {
-          #:min_threads => 0,
-          #:max_threads => 16,
           #:log_requests => false,
           :log_requests => true,
           :pidfile => './pid',

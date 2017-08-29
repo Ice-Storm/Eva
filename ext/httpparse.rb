@@ -15,11 +15,12 @@ module Eva
       parser_fiber = binding_parse_event(buffer)
       while parser_fiber.alive? do
         inst, state, data = parser_fiber.resume
-        method = inst.http_method if state == :begin
-        url = data if state == :url
-        header_field << data if state == :header_field
-        header_value << data if state == :header_value
-        body << data if state == :body
+
+        method       = inst.http_method if state == :begin
+        url          = data             if state == :url
+        body         << data            if state == :body
+        header_field << data            if state == :header_field
+        header_value << data            if state == :header_value
       end
       [method, url, header_field, header_value, body]
     end

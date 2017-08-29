@@ -1,9 +1,9 @@
-require_relative './const'
-require_relative './watch_parser'
-
 require 'stringio'
 require 'uri'
 require 'rack'
+
+require_relative './const'
+require_relative './watch_parser'
 
 module Eva
   class Client
@@ -26,13 +26,13 @@ module Eva
     end
 
     def bind
+      set_listen(1024)
       @server.close && @state == :run if @state == :restart
       @server.bind('127.0.0.1', 24567) do |client|
         client.progress { |buffer| yield(client, buffer) if block_given? }
         client.start_read
         client.catch { |args| p args }
       end
-      set_listen(1024)
       @server.catch { |args| p args }
     end
 
