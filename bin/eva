@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+#
+
+p 'eva exec'
+
+require '../lib/eva/cli'
+
+cli = Eva::CLI.new ARGV
+
+cli.run
+

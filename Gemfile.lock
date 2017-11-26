@@ -1,0 +1,28 @@
+GEM
+  remote: https://gems.ruby-china.org/
+  specs:
+    concurrent-ruby (1.0.5)
+    ffi (1.9.18)
+    ffi-compiler (1.0.1)
+      ffi (>= 1.0.0)
+      rake
+    http-parser (1.2.0)
+      ffi-compiler (>= 1.0, < 2.0)
+    libuv (3.2.0)
+      concurrent-ruby (~> 1.0)
+      ffi (~> 1.9)
+      ruby-tls (~> 2.1)
+    rake (12.2.1)
+    ruby-tls (2.3.0)
+      concurrent-ruby (~> 1.0)
+      ffi-compiler (>= 1.0, < 2.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  http-parser
+  libuv
+
+BUNDLED WITH
+   1.16.0
