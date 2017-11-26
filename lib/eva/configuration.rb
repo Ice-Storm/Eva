@@ -125,7 +125,7 @@ module Eva
       end
 
       if @options[:log_requests]
-        require './commonlogger'
+        require 'eva/commonlogger'
         logger = @options[:logger]
         found = CommonLogger.new(found, logger)
       end
@@ -137,7 +137,7 @@ module Eva
       {
           #:log_requests => false,
           :log_requests => true,
-          :pidfile => './pid',
+          :pidfile => '/tmp/pid',
           #:debug => false,
           :binds => ["tcp://#{DefaultTCPHost}:#{DefaultTCPPort}"],
           #:workers => 0,
