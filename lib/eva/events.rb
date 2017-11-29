@@ -131,7 +131,7 @@ module Eva
       fire(:on_booted)
     end
 
-    # Returns an Events object which writes its status to 2 StringIO
+    # Returns an Events object which writes its status to StringIO
     # objects.
     #
     def self.strings

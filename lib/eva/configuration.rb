@@ -7,6 +7,7 @@ module Eva
     DefaultTCPPort = 7777
     DefaultWorkerTimeout = 60
     DefaultWorkerShutdownTimeout = 30
+    DefaultListenCount = 1024
   end
 
   class UserFileDefaultOptions
@@ -65,7 +66,6 @@ module Eva
       default_options = self.eva_default_options.merge(default_options)
 
       @options     = UserFileDefaultOptions.new(user_options, default_options)
-      p @options
       # @plugins     = PluginLoader.new
       @user_dsl    = DSL.new(@options.user_options, self)
       @file_dsl    = DSL.new(@options.file_options, self)

@@ -103,7 +103,7 @@ module Eva
     end
 
     def prepare_configuration
-      @pid = File.open('./pid').gets.to_i
+      @pid = File.open('/tmp/pid').gets.to_i
       # if @state
       #   unless File.exist? @state
       #     raise "State file not found: #{@state}"

@@ -4,11 +4,13 @@ require 'rack'
 
 require 'eva/const'
 require 'eva/watch_parser'
+require 'eva/configuration'
 
 module Eva
   class Client
 
     include Eva::Const
+    include Eva::ConfigDefault
 
     class EvaRuntimeError < RuntimeError; end
 
@@ -27,18 +29,13 @@ module Eva
 
     def bind
       @server.close && @state == :run if @state == :restart
-      p 'dsads'
-      @server.bind('127.0.0.1', 24567) do |client|
+      @server.bind(DefaultTCPHost, DefaultTCPPort) do |client|
         client.progress { |buffer| yield(client, buffer) if block_given? }
         client.start_read
         client.catch { |args| p args }
       end
-      set_listen(1024)
+      @server.listen(DefaultListenCount)
       @server.catch { |args| p args }
-    end
-
-    def set_listen(num)
-      @server.listen(num)
     end
 
     def handle_request(app)
