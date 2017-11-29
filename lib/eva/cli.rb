@@ -1,5 +1,4 @@
 require 'optparse'
-require 'rack'
 require 'rack/builder'
 
 require 'eva/runner'

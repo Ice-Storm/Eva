@@ -27,6 +27,7 @@ module Eva
 
     def bind
       @server.close && @state == :run if @state == :restart
+      p 'dsads'
       @server.bind('127.0.0.1', 24567) do |client|
         client.progress { |buffer| yield(client, buffer) if block_given? }
         client.start_read

@@ -19,6 +19,7 @@ module Eva
     attr_accessor :reactor, :state
 
     def run
+      p 'fdsfd'
       @reactor.run do |reactor|
         tcp = Eva::Client.new(reactor, @state)
         tcp.handle_request(@app)

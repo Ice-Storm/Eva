@@ -79,6 +79,7 @@ module Eva
     end
 
     def run
+      output_header 'cluster'
       fork_workers
       @workers.each { |work| work.server.run }
     end

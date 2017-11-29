@@ -1,7 +1,5 @@
 require 'rack/handler'
 
-#require 'eva/server'
-
 module Rack
   module Handler
     module Eva
