@@ -16,7 +16,7 @@ module Rack
 
       def self.run(app, options = {})
         conf = self.config(app, options)
-        events = ::Eva::Events.strings
+        events = ::Eva::Events.stdio
         launcher = ::Eva::Launcher.new(conf, :events => events)
 
         launcher.run
