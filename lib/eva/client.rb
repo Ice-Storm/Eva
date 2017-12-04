@@ -14,12 +14,11 @@ module Eva
 
     class EvaRuntimeError < RuntimeError; end
 
-    def initialize(reactor, state)
-      @reactor = reactor.tcp
-      @state = state
-      # @timeout = @reactor.timer do
-      #   @reactor.stop
-      #   @reactor.close
+    def initialize(reactor)
+      @tcp_reactor = reactor.tcp
+      # @timeout = @tcp_reactor.timer do
+      #   @tcp_reactor.stop
+      #   @tcp_reactor.close
       #   p "test timed out"
       # end
       #@timeout.start(100)
@@ -27,14 +26,13 @@ module Eva
     end
 
     def bind
-      @reactor.close && @state == :run if @state == :restart
-      @reactor.bind(DefaultTCPHost, DefaultTCPPort) do |client|
+      @tcp_reactor.bind(DefaultTCPHost, DefaultTCPPort) do |client|
         client.progress { |buffer| yield(client, buffer) if block_given? }
         client.start_read
-        client.catch { |args| p "client #{args}" }
+        client.catch { |error| p error.message }
       end
-      @reactor.listen(DefaultListenCount)
-      @reactor.catch { |error| p error.message }
+      @tcp_reactor.listen(DefaultListenCount)
+      @tcp_reactor.catch { |error| p error.message }
     end
 
     def handle_request(app)

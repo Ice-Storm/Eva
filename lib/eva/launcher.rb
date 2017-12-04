@@ -15,17 +15,9 @@ module Eva
 
     attr_accessor :events
 
-    def logic
-      if @server.state == :restart
-        @server.runnning? ? @server.stop : @server.run(:restart)
-        logic
-      end
-    end
-
     def run
       setup_signals
       @server.run
-      logic
     end
 
     def write_state
@@ -67,34 +59,33 @@ module Eva
       # 13 -> restart
       # s = { :SIG_USR1 => 11, :SIG_USR2 => 13 }
 
-      @server.start_server.reactor.on_program_interrupt {
+      @server.reactor.on_program_interrupt {
         p 'on_program_interrupt'
-        #graceful_stop
+        graceful_stop
        # @server.restart
       }
 
-      @server.start_server.reactor.signal(:TERM) {
+      @server.reactor.signal(:TERM) {
         p 'reactor TERM'
         graceful_stop
       }
 
-      @server.start_server.reactor.signal(:SIGINT) {
+      @server.reactor.signal(:SIGINT) do
         p 'reactor SIGINT'
-        graceful_stop
-      }
+        #graceful_stop
+      end
 
-      @server.start_server.reactor.signal(:SIGHUP) {
+      @server.reactor.signal(:SIGHUP) {
         p 'reactor SIGHUP'
       }
 
-      @server.start_server.reactor.signal(11) {
+      @server.reactor.signal(11) {
         p 'reactor SIGUSR1'
       }
 
-      @server.start_server.reactor.signal(13) {
+      @server.reactor.signal(13) {
         p 'restart'
-        @server.stop
-        @server.set_state :restart
+        @server.stop && @server.run
       }
     end
   end

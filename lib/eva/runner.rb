@@ -14,16 +14,12 @@ module Eva
       @server = Eva::Server.new(@conf.app)
     end
 
-    def start_server
-      @server
+    def runnning?
+      @server.reactor.running?
     end
 
-    def state
-      @server.state
-    end
-
-    def set_state(new_state)
-      @server.state = new_state
+    def reactor
+      @server.reactor
     end
 
     def log(str)

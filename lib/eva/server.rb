@@ -11,16 +11,19 @@ module Eva
     include Eva::Const
 
     def initialize(app)
+      @app = app      
       @reactor = Libuv::Reactor.new
-      @app = app
-      @state = :stop
     end
 
-    attr_accessor :reactor, :state
+    attr_accessor :reactor
+
+    def stop
+      @reactor.stop
+    end
 
     def run
       @reactor.run do |reactor|
-        tcp = Eva::Client.new(reactor, @state)
+        tcp = Eva::Client.new(reactor)
         tcp.handle_request(@app)
       end
     end
