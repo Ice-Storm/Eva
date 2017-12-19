@@ -2,33 +2,23 @@ require 'stringio'
 require 'uri'
 require 'rack'
 
-<<<<<<< HEAD
-require_relative './const'
-require_relative './watch_parser'
-=======
 require 'eva/const'
 require 'eva/watch_parser'
 require 'eva/configuration'
->>>>>>> dev
 
 module Eva
   class Client
 
     include Eva::Const
-<<<<<<< HEAD
-=======
     include Eva::ConfigDefault
->>>>>>> dev
 
     class EvaRuntimeError < RuntimeError; end
 
-    def initialize(reactor, state)
-      @reactor = reactor
-      @server = @reactor.tcp
-      @state = state
-      # @timeout = @reactor.timer do
-      #   @reactor.stop
-      #   @server.close
+    def initialize(reactor)
+      @tcp_reactor = reactor.tcp
+      # @timeout = @tcp_reactor.timer do
+      #   @tcp_reactor.stop
+      #   @tcp_reactor.close
       #   p "test timed out"
       # end
       #@timeout.start(100)
@@ -36,41 +26,21 @@ module Eva
     end
 
     def bind
-      @server.close && @state == :run if @state == :restart
-<<<<<<< HEAD
-      @server.bind('127.0.0.1', 24567) do |client|
-=======
-      @server.bind(DefaultTCPHost, DefaultTCPPort) do |client|
->>>>>>> dev
+      @tcp_reactor.bind(DefaultTCPHost, DefaultTCPPort) do |client|
         client.progress { |buffer| yield(client, buffer) if block_given? }
         client.start_read
-        client.catch { |args| p args }
+        client.catch { |error| p error.message }
       end
-<<<<<<< HEAD
-      set_listen(1024)
-      @server.catch { |args| p args }
+      @tcp_reactor.listen(DefaultListenCount)
+      @tcp_reactor.catch { |error| p error.message }
     end
 
-    def set_listen(num)
-      @server.listen(num)
-    end
-
-=======
-      @server.listen(DefaultListenCount)
-      @server.catch { |args| p args }
-    end
-
->>>>>>> dev
     def handle_request(app)
       bind do |client, buffer|
         @watch_parser = Eva::WatchParser.new(buffer)
         @watch_parser.execute nil do |env|
           handle_rack(client, app, env)
-<<<<<<< HEAD
-          # client.finally { @server.close }
-=======
           #client.finally { @server.close }
->>>>>>> dev
         end
       end
     end

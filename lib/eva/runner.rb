@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-require_relative './const'
-require_relative './server'
-require_relative './events'
-=======
 require 'eva/const'
 require 'eva/server'
 require 'eva/events'
->>>>>>> dev
 
 module Eva
   class Runner
@@ -20,16 +14,12 @@ module Eva
       @server = Eva::Server.new(@conf.app)
     end
 
-    def start_server
-      @server
+    def runnning?
+      @server.reactor.running?
     end
 
-    def state
-      @server.state
-    end
-
-    def set_state(new_state)
-      @server.state = new_state
+    def reactor
+      @server.reactor
     end
 
     def log(str)

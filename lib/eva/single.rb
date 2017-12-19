@@ -1,33 +1,20 @@
-<<<<<<< HEAD
-require_relative './runner'
-=======
 require 'eva/runner'
->>>>>>> dev
 
 module Eva
   class Single < Runner
 
     def stop
-      set_state :stop
-      start_server.reactor.stop
+      @server.stop
     end
 
-    def runnning?
-      start_server.reactor.running?
-    end
-
-    def run(state = :run)
-      set_state state
-
-      output_header 'single'
-      @launcher.write_state
-
+    def run
       begin
-        start_server.run
+        output_header 'single'
+        @launcher.write_state
+        @server.run
       rescue => e
         log 'unknown error occurred'
         log e.message
-        log e.trace
       end
     end
 

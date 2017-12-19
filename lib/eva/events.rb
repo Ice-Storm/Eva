@@ -1,9 +1,5 @@
 require 'stringio'
-<<<<<<< HEAD
-require_relative './const'
-=======
 require 'eva/const'
->>>>>>> dev
 
 module Eva
   # The default implement of an event sink object used by Server
@@ -135,11 +131,7 @@ module Eva
       fire(:on_booted)
     end
 
-<<<<<<< HEAD
-    # Returns an Events object which writes its status to 2 StringIO
-=======
     # Returns an Events object which writes its status to StringIO
->>>>>>> dev
     # objects.
     #
     def self.strings

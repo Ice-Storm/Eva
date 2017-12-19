@@ -1,38 +1,25 @@
-<<<<<<< HEAD
-require_relative './single'
-require_relative './cluster'
-require_relative './state_file'
-require_relative './const'
-=======
 require 'eva/single'
 require 'eva/cluster'
 require 'eva/state_file'
 require 'eva/const'
->>>>>>> dev
 
 module Eva
 
   class Launcher
     def initialize(conf, launcher_args={})
-      @conf    = conf
-      @options = @conf.options
-      @events  = launcher_args[:events] || Events::DEFAULT
-      @server  = Eva::Single.new(self, @conf)
+      @conf     = conf
+      @options  = @conf.options
+      @events   = launcher_args[:events] || Events::DEFAULT
+      @server   = Eva::Single.new(self, @conf)
+      @deferred = @server.reactor.defer
+      @promise  = @deferred.promise
     end
 
     attr_accessor :events
 
-    def logic
-      if @server.state == :restart
-        @server.runnning? ? @server.stop : @server.run(:restart)
-        logic
-      end
-    end
-
     def run
       setup_signals
       @server.run
-      logic
     end
 
     def write_state
@@ -74,35 +61,42 @@ module Eva
       # 13 -> restart
       # s = { :SIG_USR1 => 11, :SIG_USR2 => 13 }
 
-      @server.start_server.reactor.on_program_interrupt {
+      @server.reactor.on_program_interrupt do
         p 'on_program_interrupt'
-        #graceful_stop
+        
        # @server.restart
-      }
+      end
 
-      @server.start_server.reactor.signal(:TERM) {
-        p 'reactor TERM'
+      # evactl stop
+      @server.reactor.signal(:TERM) do
         graceful_stop
-      }
+      end
 
-      @server.start_server.reactor.signal(:SIGINT) {
+      @server.reactor.signal(:SIGINT) do
         p 'reactor SIGINT'
         graceful_stop
-      }
+      end
 
-      @server.start_server.reactor.signal(:SIGHUP) {
+      @server.reactor.signal(:SIGHUP) do
         p 'reactor SIGHUP'
-      }
+      end
 
-      @server.start_server.reactor.signal(11) {
+      @server.reactor.signal(11) do
         p 'reactor SIGUSR1'
-      }
+      end
 
-      @server.start_server.reactor.signal(13) {
-        p 'restart'
-        @server.stop
-        @server.set_state :restart
-      }
+      # evactl restart
+      # rebinding tcp
+      @server.reactor.signal(13) do
+        reactor_stop = Proc.new { @server.reactor.tcp.close }
+        @server.reactor.run do
+          @promise.then reactor_stop, nil do 
+            @server.run
+          end
+          @deferred.resolve
+        end
+      end
+    
     end
   end
 end

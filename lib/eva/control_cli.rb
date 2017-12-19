@@ -150,7 +150,7 @@ module Eva
             Process.kill 11, @pid
 
           else
-            message "Puma is started"
+            message "Eva is started"
             return
         end
 
