@@ -2,13 +2,23 @@ require 'stringio'
 require 'uri'
 require 'rack'
 
+<<<<<<< HEAD
 require_relative './const'
 require_relative './watch_parser'
+=======
+require 'eva/const'
+require 'eva/watch_parser'
+require 'eva/configuration'
+>>>>>>> dev
 
 module Eva
   class Client
 
     include Eva::Const
+<<<<<<< HEAD
+=======
+    include Eva::ConfigDefault
+>>>>>>> dev
 
     class EvaRuntimeError < RuntimeError; end
 
@@ -27,11 +37,16 @@ module Eva
 
     def bind
       @server.close && @state == :run if @state == :restart
+<<<<<<< HEAD
       @server.bind('127.0.0.1', 24567) do |client|
+=======
+      @server.bind(DefaultTCPHost, DefaultTCPPort) do |client|
+>>>>>>> dev
         client.progress { |buffer| yield(client, buffer) if block_given? }
         client.start_read
         client.catch { |args| p args }
       end
+<<<<<<< HEAD
       set_listen(1024)
       @server.catch { |args| p args }
     end
@@ -40,12 +55,22 @@ module Eva
       @server.listen(num)
     end
 
+=======
+      @server.listen(DefaultListenCount)
+      @server.catch { |args| p args }
+    end
+
+>>>>>>> dev
     def handle_request(app)
       bind do |client, buffer|
         @watch_parser = Eva::WatchParser.new(buffer)
         @watch_parser.execute nil do |env|
           handle_rack(client, app, env)
+<<<<<<< HEAD
           # client.finally { @server.close }
+=======
+          #client.finally { @server.close }
+>>>>>>> dev
         end
       end
     end

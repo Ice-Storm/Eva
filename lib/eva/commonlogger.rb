@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 require_relative './util'
+=======
+require 'eva/util'
+>>>>>>> dev
 
 module Eva
   # Rack::CommonLogger forwards every request to the given +app+, and

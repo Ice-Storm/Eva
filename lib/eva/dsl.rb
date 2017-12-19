@@ -6,6 +6,29 @@ module Eva
       @plugins = []
     end
 
+<<<<<<< HEAD
+=======
+    def _load_from(path)
+      if path
+        @path = path
+        instance_eval(File.read(path), path, 1)
+      end
+    ensure
+      _offer_plugins
+    end
+
+    def _offer_plugins
+      @plugins.each do |o|
+        if o.respond_to? :config
+          @options.shift
+          o.config self
+        end
+      end
+
+      @plugins.clear
+    end
+
+>>>>>>> dev
     def inject(&blk)
       instance_eval(&blk)
     end
@@ -26,6 +49,14 @@ module Eva
       @options[:app] = obj
     end
 
+<<<<<<< HEAD
+=======
+    def bind(url)
+      @options[:binds] ||= []
+      @options[:binds] << url
+    end
+
+>>>>>>> dev
     # Set the environment in which the Rack's app will run.
     def environment(environment)
       @options[:environment] = environment

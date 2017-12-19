@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 require_relative './single'
 require_relative './cluster'
 require_relative './state_file'
 require_relative './const'
+=======
+require 'eva/single'
+require 'eva/cluster'
+require 'eva/state_file'
+require 'eva/const'
+>>>>>>> dev
 
 module Eva
 

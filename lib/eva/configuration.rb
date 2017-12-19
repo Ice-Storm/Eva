@@ -1,4 +1,4 @@
-require_relative './dsl'
+require 'eva/dsl'
 
 module Eva
   module ConfigDefault
@@ -7,6 +7,7 @@ module Eva
     DefaultTCPPort = 7777
     DefaultWorkerTimeout = 60
     DefaultWorkerShutdownTimeout = 30
+    DefaultListenCount = 1024
   end
 
   class UserFileDefaultOptions
@@ -65,7 +66,6 @@ module Eva
       default_options = self.eva_default_options.merge(default_options)
 
       @options     = UserFileDefaultOptions.new(user_options, default_options)
-      p @options
       # @plugins     = PluginLoader.new
       @user_dsl    = DSL.new(@options.user_options, self)
       @file_dsl    = DSL.new(@options.file_options, self)
@@ -125,7 +125,7 @@ module Eva
       end
 
       if @options[:log_requests]
-        require_relative './commonlogger'
+        require 'eva/commonlogger'
         logger = @options[:logger]
         found = CommonLogger.new(found, logger)
       end
@@ -137,7 +137,7 @@ module Eva
       {
           #:log_requests => false,
           :log_requests => true,
-          :pidfile => './pid',
+          :pidfile => '/tmp/pid',
           #:debug => false,
           :binds => ["tcp://#{DefaultTCPHost}:#{DefaultTCPPort}"],
           #:workers => 0,
@@ -155,5 +155,22 @@ module Eva
           :first_data_timeout => Const::FIRST_DATA_TIMEOUT
       }
     end
+
+
+    def load
+      files = @options.all_of(:config_files)
+
+      if files.empty?
+        files << %W(config/eva/#{@options[:environment]}.rb config/eva.rb).find { |f| File.exist?(f) }
+      elsif files == ['-']
+        files = []
+      end
+
+      files.each do |f|
+        @file_dsl._load_from(f)
+      end
+      @options
+    end
+
   end
 end

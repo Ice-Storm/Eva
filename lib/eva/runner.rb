@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 require_relative './const'
 require_relative './server'
 require_relative './events'
+=======
+require 'eva/const'
+require 'eva/server'
+require 'eva/events'
+>>>>>>> dev
 
 module Eva
   class Runner

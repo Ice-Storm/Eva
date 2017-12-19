@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 #
 
-require_relative '../lib/eva/cli'
+p 'eva exec'
+
+require 'eva/cli'
 
 cli = Eva::CLI.new ARGV
 

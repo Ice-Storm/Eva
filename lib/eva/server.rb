@@ -1,9 +1,15 @@
 require 'libuv'
 require 'uri'
 
+<<<<<<< HEAD
 require_relative './watch_parser'
 require_relative './const'
 require_relative './client'
+=======
+require 'eva/watch_parser'
+require 'eva/const'
+require 'eva/client'
+>>>>>>> dev
 
 module Eva
   class Server

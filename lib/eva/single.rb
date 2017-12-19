@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 require_relative './runner'
+=======
+require 'eva/runner'
+>>>>>>> dev
 
 module Eva
   class Single < Runner

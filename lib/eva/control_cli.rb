@@ -2,10 +2,11 @@ require 'optparse'
 require 'uri'
 require 'socket'
 
-require_relative './server'
-require_relative './client'
-require_relative './launcher'
-require_relative './configuration'
+require 'eva/cli'
+require 'eva/server'
+require 'eva/client'
+require 'eva/launcher'
+require 'eva/configuration'
 
 module Eva
   class ControlCLI
@@ -26,24 +27,66 @@ module Eva
       @stderr = stderr
       @cli_options = {}
 
+      opts = OptionParser.new do |o|
+        o.banner = "Usage: evactl (-p PID | -P pidfile | -S status_file | -C url -T token | -F config.rb) (#{COMMANDS.join("|")})"
+
+        o.on "-S", "--state PATH", "Where the state file to use is" do |arg|
+          @state = arg
+        end
+
+        o.on "-Q", "--quiet", "Not display messages" do
+          @quiet = true
+        end
+
+        o.on "-P", "--pidfile PATH", "Pid file" do |arg|
+          @pidfile = arg
+        end
+
+        o.on "-p", "--pid PID", "Pid" do |arg|
+          @pid = arg.to_i
+        end
+
+        o.on "-C", "--control-url URL", "The bind url to use for the control server" do |arg|
+          @control_url = arg
+        end
+
+        o.on "-T", "--control-token TOKEN", "The token to use as authentication for the control server" do |arg|
+          @control_auth_token = arg
+        end
+
+        o.on "-F", "--config-file PATH", "Eva config script" do |arg|
+          @config_file = arg
+        end
+
+        o.on_tail("-H", "--help", "Show this message") do
+          @stdout.puts o
+          exit
+        end
+
+        o.on_tail("-V", "--version", "Show version") do
+          puts Const::EVA_VERSION
+          exit
+        end
+      end
+
+      opts.order!(argv) { |a| opts.terminate a }
 
       @command = argv.shift
 
-      # unless @config_file == '-'
-      #   if @config_file.nil? and File.exist?('config/eva.rb')
-      #     @config_file = 'config/eva.rb'
-      #   end
-      #
-      #   if @config_file
-      #     config = Puma::Configuration.new({ config_files: [@config_file] }, {})
-      #     config.load
-      #     @state              ||= config.options[:state]
-      #     @control_url        ||= config.options[:control_url]
-      #     @control_auth_token ||= config.options[:control_auth_token]
-      #     @pidfile            ||= config.options[:pidfile]
-      #   end
-      # end
+      unless @config_file == '-'
+        if @config_file.nil? and File.exist?('config/eva.rb')
+          @config_file = 'config/eva.rb'
+        end
 
+        if @config_file
+          config = Eva::Configuration.new({ config_files: [@config_file] }, {})
+          config.load
+          @state              ||= config.options[:state]
+          @control_url        ||= config.options[:control_url]
+          @control_auth_token ||= config.options[:control_auth_token]
+          @pidfile            ||= config.options[:pidfile]
+        end
+      end
 
       # check present of command
       unless @command
@@ -60,7 +103,7 @@ module Eva
     end
 
     def prepare_configuration
-      @pid = File.open('./pid').gets.to_i
+      @pid = File.open('/tmp/pid').gets.to_i
       # if @state
       #   unless File.exist? @state
       #     raise "State file not found: #{@state}"
@@ -129,6 +172,13 @@ module Eva
       message e.message
       message e.backtrace
       exit 1
+    end
+
+    private
+
+    def start
+      cli = Eva::CLI.new(@argv)
+      cli.run
     end
 
   end

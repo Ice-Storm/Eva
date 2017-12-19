@@ -1,11 +1,9 @@
 require 'optparse'
-
-require_relative './runner'
-require_relative './launcher'
-require_relative './configuration'
-
-require 'rack'
 require 'rack/builder'
+
+require 'eva/runner'
+require 'eva/launcher'
+require 'eva/configuration'
 
 
 module Eva

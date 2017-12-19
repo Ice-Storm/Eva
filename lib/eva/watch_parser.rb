@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 require_relative '../../ext/httpparse'
 require_relative './const'
+=======
+require 'eva/httpparse'
+require 'eva/const'
+>>>>>>> dev
 
 require 'stringio'
 

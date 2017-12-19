@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 #
 
-require_relative '../lib/eva/control_cli'
+require 'eva/control_cli'
 
 cli = Eva::ControlCLI.new ARGV.dup
 
